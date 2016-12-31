@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kick Durianroider in the Can</title>
+    <style>
+body {
+	text-align: center;
+}
+    </style>
+  </head>
+  <body>
+    <p><img width="120" height="70" src="aussie.png" onclick="kick();" /></p>
+    <p>Give us a click, Sheila.</p>
+    <p><canvas id="game" width="600" height="700"></canvas></p>
+    <p>P.S. Don't forget to recycle!</p>
+    <script type="text/javascript">
+
+var canvas = document.getElementById('game');
+var c = canvas.getContext('2d');
+
+var durian = new Image();
+durian.src = 'durianroider.png';
+function draw_durian(level) {
+	c.save();
+	c.translate(200, 300);
+	c.rotate(4.7 - level*1.6);
+	c.drawImage(durian, 0 - durian.width/2, 0);
+	c.restore();
+}
+
+var trash = new Image();
+trash.src = 'trash.png';
+function draw_trash() {
+	c.drawImage(trash, -188, 238, 600, 600);
+}
+
+var boot = new Image();
+boot.src = 'boot.png';
+function draw_boot(level) {
+	c.save();
+	c.translate(550, 240);
+	c.rotate(-1.0 + level);
+	c.drawImage(boot, -boot.width, 0);
+	c.restore();
+}
+
+function draw(b, p) {
+	c.clearRect(0, 0, canvas.width, canvas.height);
+	draw_boot(b);
+	draw_durian(p);
+	draw_trash();
+}
+
+var foff = 5;
+var frame = -foff;
+var intensity;
+
+function animate() {
+	var b, p;
+
+	if (frame < 0) {
+		b = (frame + foff) / foff;
+		p = 0;
+	} else {
+		b = (frame > foff) ? 0.0 : (foff - frame) / foff;
+		p = frame * (intensity / 30);
+		if (p > intensity*2) {
+			frame = -foff;
+			return 0;
+		}
+		if (p > intensity && intensity < 1.0)
+			p = intensity - (p - intensity);
+	}
+	draw(b, p);
+	frame += 1;
+	window.setTimeout(animate, 10);
+	return 1;
+}
+
+function kick() {
+	if (intensity != 1.0 && frame == -foff) {
+		v = [ 0.2, 0.4, 0.6, 0.8, 0.9, 0.75, 0.5, 1.0 ];
+		intensity = v[Math.floor(Math.random() * v.length)];
+		animate();
+	}
+}
+
+boot.addEventListener("load", function() { draw(0, 0); }, false);
+
+    </script>
+  </body>
+</html>
